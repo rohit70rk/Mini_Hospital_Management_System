@@ -51,16 +51,17 @@ CREATE DATABASE hms_db;
 CREATE USER hms_user WITH PASSWORD 'yourpassword';
 GRANT ALL PRIVILEGES ON DATABASE hms_db TO hms_user;
 
-1. Create and activate a virtual environment:
+### 1. Create and activate a virtual environment:
 
-    # Mac/Linux
+    #### Mac/Linux
+
     python3 -m venv venv
     source .venv/bin/activate
 
-    # Windows
+    #### Windows
     python -m venv venv
     venv\Scripts\activate
 
-2. Install dependencies:
+### 2. Install dependencies:
 
     pip install -r requirements.txt
