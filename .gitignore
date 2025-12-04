@@ -1,0 +1,12 @@
+# --- Operating System Files ---
+
+# ENV files
+.venv/
+
+# macOS
+.DS_Store
+__pycache__/
+
+# Windows
+Thumbs.db
+Desktop.ini
