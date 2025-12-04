@@ -47,21 +47,24 @@ Before running the project, ensure you have the following installed:
 
 ## 💾 Installation & Setup
 
-CREATE DATABASE hms_db;
-CREATE USER hms_user WITH PASSWORD 'yourpassword';
-GRANT ALL PRIVILEGES ON DATABASE hms_db TO hms_user;
+### 1. Database Setup
 
-### 1. Create and activate a virtual environment:
+    CREATE DATABASE hms_db;
+    CREATE USER hms_user WITH PASSWORD 'yourpassword';
+    GRANT ALL PRIVILEGES ON DATABASE hms_db TO hms_user;
 
-    #### Mac/Linux
+### 2. Create and activate a virtual environment:
+
+    ### Mac/Linux
 
     python3 -m venv venv
     source .venv/bin/activate
 
-    #### Windows
+    ### Windows
+    
     python -m venv venv
     venv\Scripts\activate
 
-### 2. Install dependencies:
+### 3. Install dependencies:
 
     pip install -r requirements.txt
