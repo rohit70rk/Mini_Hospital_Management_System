@@ -12,11 +12,6 @@ A web-based hospital management application focused on doctor availability manag
 - [Tech Stack](#-tech-stack)
 - [Prerequisites](#-prerequisites)
 - [Installation & Setup](#-installation--setup)
-  - [1. Database Setup](#1-database-setup)
-  - [2. Backend (Django)](#2-backend-django)
-  - [3. Email Service (Serverless)](#3-email-service-serverless)
-- [Google Calendar Integration](#-google-calendar-integration)
-- [Usage](#-usage)
 
 ## ✨ Features
 
@@ -52,9 +47,6 @@ Before running the project, ensure you have the following installed:
 
 ## 💾 Installation & Setup
 
-### 1. Database Setup
-Ensure PostgreSQL is running and create a database:
-```sql
 CREATE DATABASE hms_db;
 CREATE USER hms_user WITH PASSWORD 'yourpassword';
 GRANT ALL PRIVILEGES ON DATABASE hms_db TO hms_user;
