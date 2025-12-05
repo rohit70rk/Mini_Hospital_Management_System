@@ -1,0 +1,167 @@
+{% extends 'base.html' %}
+{% load static %}  {% block content %}
+
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-5 mb-lg-0">
+                <span class="text-uppercase fw-bold text-primary tracking-wide medium-font">
+                    <i class="bi bi-activity me-1"></i> Hospital Management System
+                </span>
+    
+                <h1 class="hero-title mt-3">
+                    Modern Healthcare <br>
+                    <span class="hero-highlight">Simplified.</span>
+                </h1>
+           
+                <p class="hero-subtitle">
+                    A secure platform for managing doctor availability and patient appointments.
+                    Featuring <strong>Google Calendar Sync</strong> and real-time slot blocking to prevent double-booking.
+                </p>
+
+                <div class="d-flex gap-3 flex-wrap">
+                    {% if user.is_authenticated %}
+                        {% if user.is_doctor %}
+                            <a href="{% url 'doctor_dashboard' %}" class="btn btn-nav">
+                                <i class="bi bi-speedometer2 me-2"></i>Doctor Dashboard
+                            </a>
+                            <button class="btn btn-primary-outline" data-bs-toggle="modal" data-bs-target="#addSlotModal">
+                                <i class="bi bi-plus-circle me-2"></i>Add Availability
+                            </button>
+                        {% else %}
+                            <a href="{% url 'patient_dashboard' %}" class="btn btn-nav">
+                                <i class="bi bi-calendar-check me-2"></i>My Appointment
+                            </a>
+                            <a href="{% url 'patient_dashboard' %}" class="btn btn-nav">
+                                <i class="bi bi-calendar-check me-2"></i>Book Appointment
+                            </a>
+                        {% endif %}
+                    {% else %}
+                        <a href="#" class="btn btn-success-outline" data-bs-toggle="modal" data-bs-target="#loginModal">I am a Patient</a>
+                        <a href="#" class="btn btn-primary-outline" data-bs-toggle="modal" data-bs-target="#loginModal">I am a Doctor</a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="col-lg-6 text-center position-relative">
+                <div class="blob-background"></div>
+                
+                <img src="{% static 'doctor.jpg' %}" 
+                     alt="Doctor" 
+                     class="img-fluid rounded-4 shadow-lg hero-img-doctor">
+                
+                <div class="bg-white p-3 rounded-4 shadow floating-status-card d-none d-md-block">
+                    <div class="d-flex align-items-center mb-2">
+                        <div class="bg-success rounded-circle p-2 me-2 text-white"><i class="bi bi-check-lg"></i></div>
+                        <div>
+                            <small class="d-block text-muted text-xs">Status</small>
+                            <span class="fw-bold text-dark">System Online</span>
+                        </div>
+                    </div>
+                    <small class="text-muted">Handling concurrent bookings securely.</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5 bg-white">
+    <div class="container py-5">
+        <div class="text-center mb-5">
+            <h6 class="text-primary fw-bold text-uppercase">Core Features</h6>
+            <h2 class="fw-bold mb-3">Why Choose Mini HMS?</h2>
+            <p class="text-muted col-lg-6 mx-auto">
+                Built with efficiency and security in mind.
+                Our system handles role-based access for doctors and patients seamlessly.
+            </p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="icon-box bg-blue-light">
+                        <i class="bi bi-calendar-event"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3">Smart Appointments</h4>
+                    <p class="text-muted">
+                        Real-time slot blocking ensures no two patients can book the same doctor at the same time.
+                        The system prevents race conditions instantly.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="icon-box bg-teal-light">
+                        <i class="bi bi-google"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3">Calendar Sync</h4>
+                    <p class="text-muted">
+                        Automatically adds confirmed appointments to both the Doctor's and Patient's Google Calendar using OAuth2 API integration.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="icon-box bg-purple-light">
+                        <i class="bi bi-envelope-paper"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3">Serverless Alerts</h4>
+                    <p class="text-muted">
+                        Powered by AWS Lambda.
+                        Patients receive instant <code>BOOKING_CONFIRMATION</code> emails, and new users get a <code>SIGNUP_WELCOME</code>.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5" style="background-color: #f1f8ff;">
+    <div class="container py-5">
+        <div class="row g-5 align-items-center">
+            <div class="col-md-6">
+                <div class="bg-white p-5 rounded-4 shadow-sm border-start border-5 border-primary h-100">
+                    <h3 class="fw-bold text-primary mb-3"><i class="bi bi-person-badge-fill me-2"></i>For Doctors</h3>
+                    <ul class="list-unstyled">
+                        <li class="mb-3 d-flex align-items-start">
+                            <i class="bi bi-check-circle-fill text-primary me-3 mt-1"></i>
+                            <span><strong>Dashboard:</strong> Manage personal availability and view upcoming schedules.</span>
+                        </li>
+                        <li class="mb-3 d-flex align-items-start">
+                            <i class="bi bi-check-circle-fill text-primary me-3 mt-1"></i>
+                            <span><strong>Slot Management:</strong> Create specific time slots (e.g., 10:00-10:30) easily.</span>
+                        </li>
+                        <li class="d-flex align-items-start">
+                            <i class="bi bi-check-circle-fill text-primary me-3 mt-1"></i>
+                            <span><strong>Privacy:</strong> View and manage only your own bookings securely.</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="bg-white p-5 rounded-4 shadow-sm border-start border-5 border-success h-100">
+                    <h3 class="fw-bold text-success mb-3"><i class="bi bi-people-fill me-2"></i>For Patients</h3>
+                    <ul class="list-unstyled">
+                        <li class="mb-3 d-flex align-items-start">
+                            <i class="bi bi-check-circle-fill text-success me-3 mt-1"></i>
+                            <span><strong>Search:</strong> Browse doctors and view their specific available time slots.</span>
+                        </li>
+                        <li class="mb-3 d-flex align-items-start">
+                            <i class="bi bi-check-circle-fill text-success me-3 mt-1"></i>
+                            <span><strong>Instant Booking:</strong> Secure a slot with a single click.</span>
+                        </li>
+                        <li class="d-flex align-items-start">
+                            <i class="bi bi-check-circle-fill text-success me-3 mt-1"></i>
+                            <span><strong>Sync:</strong> Get automatic calendar invites and email confirmations.</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% include 'appointments/add_availability.html' %}
+{% endblock %}

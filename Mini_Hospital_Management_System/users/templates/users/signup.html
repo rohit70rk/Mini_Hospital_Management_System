@@ -1,0 +1,88 @@
+<div class="modal fade" id="signupModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 border-0 shadow-lg">
+            <div class="modal-header border-0 p-4 pb-0">
+                <h5 class="modal-title fw-bold">Create Account</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            
+            <div class="modal-body p-4">
+                <form method="POST" action="{% url 'signup' %}">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label class="form-label text-muted small fw-bold">Full Name</label>
+                        <input type="text" name="fullname" class="form-control bg-light" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label text-muted small fw-bold">Mobile Number</label>
+                        <input type="tel" name="mobile" class="form-control bg-light" placeholder="9876543210" pattern="[0-9]{10}" maxlength="10" title="Please enter exactly 10 digits" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label text-muted small fw-bold">Email Address</label>
+                        <input type="email" name="email" class="form-control bg-light" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label text-muted small fw-bold">Password</label>
+                        <input type="password" name="password" class="form-control bg-light" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label text-muted small fw-bold">Confirm Password</label>
+                        <input type="password" name="confirm_password" class="form-control bg-light" required>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label text-muted small fw-bold d-block text-center mb-2">Select Your Role</label>
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <input type="radio" class="btn-check" name="role" id="rolePatient" value="patient" checked onchange="updateBtnColor()">
+                                <label class="btn btn-outline-success w-100 rounded-pill" for="rolePatient">
+                                    <i class="bi bi-person-fill me-1"></i> Patient
+                                </label>
+                            </div>
+                            <div class="col-6">
+                                <input type="radio" class="btn-check" name="role" id="roleDoctor" value="doctor" onchange="updateBtnColor()">
+                                <label class="btn btn-outline-primary w-100 rounded-pill" for="roleDoctor">
+                                    <i class="bi bi-heart-pulse-fill me-1"></i> Doctor
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" id="signupSubmitBtn" class="btn btn-success w-100 rounded-pill py-2 fw-bold text-white" style="border: none;">
+                        Create Account
+                    </button>
+                </form>
+
+                <div class="text-center mt-4">
+                    <p class="small text-muted">Already have an account? 
+                        <a href="#" data-bs-toggle="modal" data-bs-target="#loginModal" class="fw-bold text-decoration-none" style="color: var(--primary-blue);">Login</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function updateBtnColor() {
+        const btn = document.getElementById('signupSubmitBtn');
+        const isDoctor = document.getElementById('roleDoctor').checked;
+
+        if (isDoctor) {
+            // Switch to Blue
+            btn.classList.remove('btn-success');
+            btn.classList.add('btn-primary');
+            btn.style.backgroundColor = ""; // Reset inline style if any
+        } else {
+            // Switch to Green
+            btn.classList.remove('btn-primary');
+            btn.classList.add('btn-success');
+            btn.style.backgroundColor = ""; // Reset inline style if any
+        }
+    }
+</script>

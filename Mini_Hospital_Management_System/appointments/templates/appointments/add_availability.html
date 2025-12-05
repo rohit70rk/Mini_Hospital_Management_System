@@ -1,0 +1,133 @@
+{% if user.is_authenticated and user.is_doctor %}
+<div class="modal fade" id="addSlotModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold">Add Availability Slot</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" action="{% url 'my_schedule' %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Date</label>
+                        <input type="date" name="date" class="form-control" required>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Start Time</label>
+                                <select name="start_time" id="startTimeSelect" class="form-select" onchange="updateEndTimes()" required>
+                                    <option value="" selected disabled>Select Start</option>
+                                </select>
+                                <div class="form-text text-muted small">6:00 AM to 5:30 PM</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">End Time</label>
+                                <select name="end_time" id="endTimeSelect" class="form-select" disabled required>
+                                    <option value="" selected disabled>Select Duration</option>
+                                </select>
+                                <div class="form-text text-muted small">Max 6:00 PM</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary w-100 py-2 fw-bold">
+                        Save Slot
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        populateStartTimes();
+    });
+
+    function populateStartTimes() {
+        const startSelect = document.getElementById('startTimeSelect');
+        let optionsHtml = '<option value="" selected disabled>Select Start</option>';
+        
+        // Loop from 6 (6:00 AM) to 17 (5:00 PM) for the hours
+        // We handle 17:30 inside the loop logic
+        for (let i = 6; i < 18; i++) {
+            for (let j = 0; j < 60; j += 30) {
+                let hour = i < 10 ? '0' + i : i;
+                let minute = j === 0 ? '00' : '30';
+                let dbValue = `${hour}:${minute}`;
+                
+                // Display Format (AM/PM)
+                let ampm = i >= 12 ? 'PM' : 'AM';
+                let displayHour = i % 12;
+                displayHour = displayHour ? displayHour : 12;
+                let displayLabel = `${displayHour}:${minute} ${ampm}`;
+                
+                optionsHtml += `<option value="${dbValue}">${displayLabel}</option>`;
+            }
+        }
+        startSelect.innerHTML = optionsHtml;
+    }
+
+    function updateEndTimes() {
+        const startSelect = document.getElementById('startTimeSelect');
+        const endSelect = document.getElementById('endTimeSelect');
+        const selectedTime = startSelect.value; // Format "HH:MM"
+
+        // Reset End Time Dropdown
+        endSelect.innerHTML = '<option value="" selected disabled>Select Duration</option>';
+        endSelect.disabled = true;
+
+        if (!selectedTime) return;
+
+        // Parse selected start hour and minute
+        let [startHour, startMinute] = selectedTime.split(':').map(Number);
+        
+        // Enable End Time Dropdown
+        endSelect.disabled = false;
+
+        // Define valid durations: 30m, 60m, 90m, 120m
+        const durations = [30, 60, 90, 120];
+
+        durations.forEach(minutesToAdd => {
+            // Calculate new time
+            let totalMinutes = (startHour * 60) + startMinute + minutesToAdd;
+            let newHour = Math.floor(totalMinutes / 60);
+            let newMinute = totalMinutes % 60;
+
+            // --- STRICT CHECK: Do not allow past 18:00 (6:00 PM) ---
+            // If Hour > 18 OR (Hour is 18 AND minutes > 0)
+            if (newHour > 18 || (newHour === 18 && newMinute > 0)) return;
+
+            // Format for DB (HH:MM)
+            let dbHour = newHour < 10 ? '0' + newHour : newHour;
+            let dbMinute = newMinute === 0 ? '00' : newMinute;
+            let dbValue = `${dbHour}:${dbMinute}`;
+
+            // Format for Display (AM/PM)
+            let ampm = newHour >= 12 ? 'PM' : 'AM';
+            let displayHour = newHour % 12;
+            displayHour = displayHour ? displayHour : 12;
+            let displayTime = `${displayHour}:${dbMinute} ${ampm}`;
+
+            // Human readable duration text
+            let durationText = "";
+            if (minutesToAdd === 30) durationText = "30 Mins";
+            else if (minutesToAdd === 60) durationText = "1 Hour";
+            else if (minutesToAdd === 90) durationText = "1 Hr 30 Mins";
+            else if (minutesToAdd === 120) durationText = "2 Hours";
+
+            endSelect.innerHTML += `<option value="${dbValue}">${displayTime} (${durationText})</option>`;
+        });
+
+        // UX: If no options are valid (e.g., if we somehow allowed 6pm start), disable select
+        if (endSelect.options.length === 1) {
+            endSelect.innerHTML = '<option value="" disabled>No slots remaining before 6 PM</option>';
+            endSelect.disabled = true;
+        }
+    }
+</script>
+{% endif %}

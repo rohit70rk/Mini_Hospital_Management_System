@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}Find a Doctor{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h2 class="fw-bold">Meet Our Specialists</h2>
+        <p class="text-muted">Browse our list of qualified doctors and find the right care for you.</p>
+    </div>
+
+    <div class="row g-4">
+        {% for doctor in doctors %}
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 border-0 shadow-sm rounded-4 hover-shadow transition-all">
+                <div class="card-body p-4 text-center">
+                    <div class="mb-3">
+                        <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-inline-flex p-3" style="width: 80px; height: 80px; align-items: center; justify-content: center;">
+                            <i class="bi bi-person-fill fs-1"></i>
+                        </div>
+                    </div>
+                    
+                    <h5 class="fw-bold mb-1">Dr. {{ doctor.first_name }}</h5>
+                    <p class="text-muted small mb-2">General Physician</p>
+                    
+                    <p class="mb-3 badge bg-light text-dark border fw-normal">
+                        <i class="bi bi-telephone-fill text-primary me-2"></i>{{ doctor.profile.mobile }}
+                    </p>
+
+                    <div class="d-flex justify-content-center gap-2 mb-4">
+                        <span class="badge bg-light text-dark border">
+                            <i class="bi bi-star-fill text-warning me-1"></i>4.8
+                        </span>
+                        <span class="badge bg-light text-dark border">
+                            10+ Years Exp.
+                        </span>
+                    </div>
+
+                    <div class="d-grid">
+                        <a href="{% url 'patient_dashboard' %}" class="btn btn-primary rounded-pill fw-bold">
+                            View Availability
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-5">
+            <div class="bg-light rounded-4 p-5">
+                <i class="bi bi-person-x text-muted fs-1"></i>
+                <h5 class="mt-3 text-muted">No doctors found.</h5>
+                <p class="text-muted">Please check back later.</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

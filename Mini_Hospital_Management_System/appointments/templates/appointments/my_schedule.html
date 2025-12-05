@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+
+{% block title %}My Schedule{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 rounded-4 text-center p-4 mb-4">
+                <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex p-3 mb-3">
+                    <i class="bi bi-person-fill fs-1 text-primary"></i>
+                </div>
+                <h5 class="fw-bold">Dr. {{ user.first_name }}</h5>
+                <p class="text-muted small">General Physician</p>
+                <hr>
+                
+                <div class="d-grid gap-2 text-start mb-3">
+                    <a href="{% url 'doctor_dashboard' %}" class="btn btn-light text-start border-0">
+                        <i class="bi bi-grid-fill me-2"></i>Community Feed
+                    </a>
+                </div>
+
+                <div class="d-grid">
+                    <button class="btn btn-primary rounded-pill" data-bs-toggle="modal" data-bs-target="#addSlotModal">
+                        <i class="bi bi-plus-circle me-2"></i>Add Availability
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-9">
+            <h3 class="fw-bold mb-4">Manage Availability</h3>
+            
+            {% if slots %}
+                <div class="card shadow-sm border-0 rounded-4">
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0 align-middle">
+                                <thead class="bg-light">
+                                    <tr>
+                                        <th class="ps-4">Date</th>
+                                        <th>Time Slot</th>
+                                        <th>Status</th>
+                                        <th>Patient</th>
+                                        <th class="text-end pe-4">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for slot in slots %}
+                                    <tr>
+                                        <td class="ps-4 fw-medium">{{ slot.date }}</td>
+                                        <td>
+                                            <span class="badge bg-light text-dark border">
+                                                {{ slot.start_time|time:"H:i" }} - {{ slot.end_time|time:"H:i" }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            {% if slot.is_booked %}
+                                                <span class="badge bg-danger">Booked</span>
+                                            {% else %}
+                                                <span class="badge bg-success">Available</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if slot.patient %}
+                                                <div class="d-flex align-items-center">
+                                                    <div class="bg-info bg-opacity-10 rounded-circle p-1 me-2 text-info">
+                                                        <i class="bi bi-person-fill"></i>
+                                                    </div>
+                                                    <span class="small fw-bold">{{ slot.patient.first_name }}</span>
+                                                </div>
+                                                <small class="text-muted d-block ms-4" style="font-size: 0.75rem;">{{ slot.patient.profile.mobile }}</small>
+                                            {% else %}
+                                                <span class="text-muted small">-</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-end pe-4">
+                                            {% if not slot.is_booked %}
+                                                <a href="{% url 'delete_slot' slot.id %}" class="btn btn-sm btn-light text-danger" title="Remove Slot">
+                                                    <i class="bi bi-trash"></i>
+                                                </a>
+                                            {% else %}
+                                                {% if slot.cancel_request_by == 'patient' %}
+                                                    <a href="{% url 'cancel_appointment' slot.id %}" class="btn btn-sm btn-warning fw-bold">
+                                                        Approve Cancel
+                                                    </a>
+                                                {% elif slot.cancel_request_by == 'doctor' %}
+                                                    <button class="btn btn-sm btn-light text-muted" disabled>
+                                                        Pending Approval
+                                                    </button>
+                                                {% else %}
+                                                    <a href="{% url 'cancel_appointment' slot.id %}" class="btn btn-sm btn-outline-danger" title="Request Cancellation">
+                                                        <i class="bi bi-x-circle"></i> Cancel
+                                                    </a>
+                                                {% endif %}
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="text-center py-5 bg-light rounded-4">
+                    <i class="bi bi-calendar-x text-muted fs-1"></i>
+                    <p class="text-muted mt-3">No availability slots set yet.</p>
+                    <button class="btn btn-outline-primary mt-2" data-bs-toggle="modal" data-bs-target="#addSlotModal">
+                        Add your first slot
+                    </button>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% include 'appointments/add_availability.html' %}
+
+{% endblock %}

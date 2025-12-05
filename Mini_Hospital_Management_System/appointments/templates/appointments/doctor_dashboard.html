@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block title %}Doctor Collaboration{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 rounded-4 text-center p-4">
+                <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex p-3 mb-3">
+                    <i class="bi bi-person-fill fs-1 text-primary"></i>
+                </div>
+                <h5 class="fw-bold">Dr. {{ user.first_name }}</h5>
+                <p class="text-muted small">General Physician</p>
+                <hr>
+                <div class="d-grid gap-2 text-start">
+                    <a href="{% url 'my_schedule' %}" class="btn btn-light text-start">
+                        <i class="bi bi-calendar-check me-2"></i>My Schedule
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-9">
+            <h3 class="fw-bold mb-4">Doctor's Community Hub</h3>
+            
+            <div class="card border-0 shadow-sm rounded-4 mb-4">
+                <div class="card-body p-4">
+                    <form method="POST">
+                        {% csrf_token %}
+                        <label class="fw-bold mb-2">Share an update or idea...</label>
+                        <textarea name="content" class="form-control bg-light border-0" rows="3" placeholder="What's on your mind, Doctor?" required></textarea>
+                        <div class="text-end mt-3">
+                            <button type="submit" class="btn btn-primary rounded-pill px-4">Post Update</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            {% for post in posts %}
+            <div class="card border-0 shadow-sm rounded-4 mb-3">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between mb-2">
+                        <div class="d-flex align-items-center">
+                            <div class="bg-success bg-opacity-10 text-success rounded-circle p-2 me-2">
+                                <i class="bi bi-person-fill"></i>
+                            </div>
+                            <div>
+                                <h6 class="fw-bold mb-0">Dr. {{ post.author.first_name }}</h6>
+                                <small class="text-muted">{{ post.created_at|timesince }} ago</small>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="mb-0 text-dark">{{ post.content }}</p>
+                </div>
+            </div>
+            {% empty %}
+            <div class="text-center py-5 text-muted">
+                <i class="bi bi-chat-square-dots fs-1"></i>
+                <p class="mt-2">No posts yet. Be the first to share!</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,128 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini HMS | {% block title %}Hospital Management{% endblock %}</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg sticky-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="{% url 'home' %}">
+                <i class="bi bi-heart-pulse-fill me-2"></i>
+                Mini HMS
+            </a>
+            
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'home' %}">Home</a>
+                    </li>
+
+                    {% if user.is_authenticated %}
+                        {% if user.is_doctor %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'my_schedule' %}">My Schedule</a>
+                            </li>
+                        {% elif user.is_patient %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'find_doctor' %}">Find Doctors</a>
+                            </li>
+                        {% endif %}
+                        
+                        <li class="nav-item dropdown ms-3">
+                            <a class="nav-link dropdown-toggle text-dark fw-bold" href="#" role="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-person-circle me-1"></i> {{ user.username }}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end border-0 shadow">
+                                <li><a class="dropdown-item" href="#">Profile</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item text-danger" href="{% url 'logout' %}">Logout</a></li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <li class="nav-item ms-2">
+                            <button class="btn btn-nav border-0" data-bs-toggle="modal" data-bs-target="#loginModal">Login</button>
+                        </li>
+                        <li class="nav-item ms-2">
+                            <button class="btn btn-nav border-0" data-bs-toggle="modal" data-bs-target="#signupModal">Sign Up</button>
+                        </li>
+                    {% endif %}
+
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="main-wrapper">
+        <div class="container mt-3">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show border-0 shadow-sm" role="alert">
+                        <i class="bi bi-info-circle-fill me-2"></i>{{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    {% include 'users/login.html' %}
+    {% include 'users/signup.html' %}
+
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4 mb-md-0">
+                    <span class="footer-brand"><i class="bi bi-heart-pulse-fill text-primary me-2"></i>Mini HMS</span>
+                    <p class="text-muted small">
+                        Optimizing hospital operations for better patient care.
+                        Secure, fast, and reliable appointment management.
+                    </p>
+                </div>
+                <div class="col-md-2 mb-3">
+                    <h6 class="fw-bold mb-3">System</h6>
+                    <ul class="list-unstyled small text-muted">
+                        <li class="mb-2"><a href="#" class="text-decoration-none text-muted">For Doctors</a></li>
+                        <li class="mb-2"><a href="#" class="text-decoration-none text-muted">For Patients</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-2 mb-3">
+                    <h6 class="fw-bold mb-3">Resources</h6>
+                    <ul class="list-unstyled small text-muted">
+                        <li class="mb-2"><a href="#" class="text-decoration-none text-muted">Help Center</a></li>
+                        <li class="mb-2"><a href="#" class="text-decoration-none text-muted">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h6 class="fw-bold mb-3">Connect</h6>
+                    <div class="d-flex gap-3">
+                        <a href="#" class="text-secondary fs-5"><i class="bi bi-github"></i></a>
+                        <a href="#" class="text-secondary fs-5"><i class="bi bi-twitter"></i></a>
+                        <a href="#" class="text-secondary fs-5"><i class="bi bi-linkedin"></i></a>
+                    </div>
+                    <p class="mt-3 small text-muted">&copy; 2025 Mini HMS Project. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

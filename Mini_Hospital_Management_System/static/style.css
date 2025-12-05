@@ -1,0 +1,238 @@
+/* --- Global Variables --- */
+:root {
+    --primary-blue: #0d6efd;
+    --medical-teal: #20c997;
+    --soft-bg: #f8f9fa;
+    --dark-text: #2c3e50; 
+    --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    --primary-green: #198754;
+}
+
+/* --- Body & Layout --- */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #ffffff;
+    color: var(--dark-text);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.main-wrapper {
+    flex: 1;
+}
+
+/* --- Navigation Bar --- */
+.navbar {
+    background-color: white;
+    box-shadow: 0 2px 15px rgba(0,0,0,0.04);
+    padding: 15px 0;
+}
+
+.navbar-brand {
+    font-weight: 700;
+    color: var(--primary-blue) !important;
+    font-size: 1.5rem;
+    letter-spacing: -0.5px;
+}
+
+.nav-link {
+    font-weight: 500;
+    color: #6c757d;
+    margin-left: 15px;
+    transition: color 0.2s;
+}
+
+.nav-link:hover {
+    color: var(--primary-blue);
+}
+
+.nav-link.active {
+    color: var(--primary-blue);
+    font-weight: 600;
+}
+
+/* --- Navbar Buttons --- */
+.btn-nav {
+    background-color: var(--primary-blue);
+    padding: 8px 25px;
+    border-radius: 50px;
+    font-weight: 500;
+    color: white; /* Ensure text is white */
+    text-decoration: none;
+    transition: all 0.3s;
+    box-shadow: 0 4px 10px rgba(13, 110, 253, 0.2);
+    display: inline-block; /* Fix for alignment */
+}
+
+.btn-nav:hover {
+    background-color: #0b5ed7; /* Darker blue on hover */
+    color: white;
+    transform: translateY(-1px);
+}
+
+/* --- Hero Section (Home) --- */
+.hero-section {
+    padding: 30px 0;
+    background: linear-gradient(135deg, #ffffff 0%, #f1f8ff 100%);
+    border-radius: 0 0 50px 50px;
+    overflow: hidden; /* Ensures the blob doesn't spill over */
+}
+
+.hero-title {
+    font-size: 3.5rem;
+    font-weight: 800;
+    color: var(--dark-text);
+    line-height: 1.2;
+}
+
+.hero-highlight {
+    color: var(--primary-blue);
+    position: relative;
+    display: inline-block;
+}
+
+.hero-highlight::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 8px;
+    bottom: 5px;
+    left: 0;
+    background-color: rgba(13, 110, 253, 0.1);
+    z-index: -1;
+}
+
+.hero-subtitle {
+    font-size: 1.2rem;
+    color: #6c757d;
+    margin-top: 1.5rem;
+    margin-bottom: 2.5rem;
+}
+
+/* --- Hero Images & Decorations (New) --- */
+.blob-background {
+    position: absolute;
+    width: 400px;
+    height: 400px;
+    background: rgba(32, 201, 151, 0.1);
+    border-radius: 50%;
+    filter: blur(50px);
+    z-index: 0;
+    right: 0;
+    top: 50px;
+}
+
+.hero-img-doctor {
+    max-height: 600px;
+    z-index: 1;
+    position: relative;
+}
+
+.floating-status-card {
+    position: absolute;
+    bottom: 50px;
+    left: -20px;
+    z-index: 2;
+    width: 220px;
+    text-align: left;
+}
+
+.text-xs {
+    font-size: 0.75rem;
+}
+
+/* --- Feature Cards --- */
+.feature-card {
+    background: white;
+    border: none;
+    border-radius: 20px;
+    padding: 2rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%;
+    box-shadow: var(--card-shadow);
+}
+
+.feature-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 35px rgba(13, 110, 253, 0.1);
+}
+
+.icon-box {
+    width: 60px;
+    height: 60px;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+}
+
+.bg-blue-light { background-color: rgba(13, 110, 253, 0.1); color: var(--primary-blue); }
+.bg-teal-light { background-color: rgba(32, 201, 151, 0.1); color: var(--medical-teal); }
+.bg-purple-light { background-color: rgba(111, 66, 193, 0.1); color: #6f42c1; }
+
+/* --- Medical Buttons --- */
+.btn-primary-outline {
+    border: 2px solid var(--primary-blue);
+    color: var(--primary-blue);
+    padding: 12px 35px;
+    border-radius: 50px;
+    font-weight: 600;
+    background: transparent;
+    transition: all 0.3s;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-primary-outline:hover {
+    background-color: var(--primary-blue);
+    color: white;
+}
+
+/* --- Tech Badge --- */
+.tech-badge {
+    background: white;
+    border: 1px solid #e9ecef;
+    padding: 8px 16px;
+    border-radius: 30px;
+    font-size: 0.9rem;
+    color: #6c757d;
+    display: inline-flex;
+    align-items: center;
+    margin: 5px;
+    font-weight: 500;
+}
+
+/* --- Footer --- */
+footer {
+    margin-top: auto;
+    background-color: #f8f9fa;
+    border-top: 1px solid #e9ecef;
+    padding: 40px 0;
+}
+
+.footer-brand {
+    font-weight: 700;
+    color: var(--dark-text);
+    margin-bottom: 15px;
+    display: block;
+}
+
+.btn-success-outline {
+    border: 2px solid var(--primary-green); /* Using the green variable defined at top */
+    color: var(--primary-green);
+    padding: 12px 35px;
+    border-radius: 50px;
+    font-weight: 600;
+    background: transparent;
+    transition: all 0.3s;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-success-outline:hover {
+    background-color: var(--primary-green);
+    color: white;
+}
