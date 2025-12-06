@@ -125,7 +125,7 @@ A web-based hospital management application focused on doctor availability manag
 
     New TERMINAL:-
 
-    cd cd Mini_Hospital_Management_System/
+    cd Mini_Hospital_Management_System/
 
     ### Mac/Linux:
     source venv/bin/activate
