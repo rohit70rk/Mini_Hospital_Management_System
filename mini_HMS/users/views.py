@@ -3,9 +3,11 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib import messages
 from .models import Profile
+from mini_HMS.utils import trigger_email
 
 def sign_up(request):
     if request.method == 'POST':
+
         # Get data
         email = request.POST.get('email')
         password = request.POST.get('password')
@@ -49,6 +51,16 @@ def sign_up(request):
                 user.profile.role = role
                 user.profile.mobile = mobile
                 user.profile.save()
+
+            # Trigger Welcome Email
+            trigger_email(
+                action="SIGNUP_WELCOME",
+                recipient_email=email,
+                data={
+                    "name": full_name,
+                    "role": role
+                }
+            )
 
             messages.success(request, "Account created! Please login with your Mobile Number.")
             

@@ -1,0 +1,30 @@
+service: email-service
+frameworkVersion: '3'
+useDotenv: true
+
+provider:
+  name: aws
+  runtime: python3.9
+  region: us-east-1
+  environment:
+  
+    # REPLACE THESE WITH YOUR ACTUAL VALUES
+    SMTP_SERVER: "smtp.gmail.com"
+    SMTP_PORT: "587"
+
+    # Reads from .env file or environment variables
+    SENDER_EMAIL: ${env:SENDER_EMAIL}
+    SENDER_PASSWORD: ${env:SENDER_PASSWORD}
+
+
+functions:
+  sendEmail:
+    handler: handler.send_email
+    events:
+      - http:
+          path: send-email
+          method: post
+          cors: true
+
+plugins:
+  - serverless-offline

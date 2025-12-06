@@ -26,6 +26,11 @@ class AppointmentSlot(models.Model):
     def __str__(self):
         return f"{self.doctor.username} - {self.date}"
 
+    # --- OPTIMIZATION: Centralized Time Formatting ---
+    def get_time_range(self):
+        """Returns formatted string: '10:00 - 10:30'"""
+        return f"{self.start_time.strftime('%H:%M')} - {self.end_time.strftime('%H:%M')}"
+
 # --- MODEL FOR COLLABORATION ---
 class DoctorPost(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='doctor_posts')

@@ -42,13 +42,11 @@ A web-based hospital management application focused on doctor availability manag
 
 #### 2. Create and activate a virtual environment:
 
-    ### Mac/Linux
-
+    ###Mac/Linux:
     python3 -m venv venv
     source venv/bin/activate
 
-    ### Windows
-    
+    ###Windows (PowerShell):    
     python -m venv venv
     venv\Scripts\activate
 
@@ -89,5 +87,25 @@ A web-based hospital management application focused on doctor availability manag
 
 ### 2. Email Notification via Serverless Function
 
+#### 1. Install Dependencies
 
+    cd email-service
 
+    npm install
+
+#### 2. Configure Credentials
+
+    ###Mac/Linux:
+    touch .env
+
+    ###Windows (PowerShell):
+    New-Item .env -ItemType File
+
+    ###Add the following content to .env: (Replace with your actual Gmail address and App Password)
+
+    SENDER_EMAIL=your.email@gmail.com
+    SENDER_PASSWORD=xvfr tgbn hyuj mkiol  # Your 16-char App Password
+
+#### 3. Start the Service
+
+    sls offline

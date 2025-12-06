@@ -1,14 +1,16 @@
-# --- Operating System Files ---
-
-# ENV files
+# --- Dependencies ---
+node_modules/
+package-lock.json
 .venv/
+venv/
+__pycache__/
+*.pyc
+
+# --- OS Files ---
+.DS_Store
+Thumbs.db
+
+# --- Secrets (IMPORTANT) ---
+.env
 client_secret.json
 db.sqlite3
-
-# macOS
-.DS_Store
-__pycache__/
-
-# Windows
-Thumbs.db
-Desktop.ini

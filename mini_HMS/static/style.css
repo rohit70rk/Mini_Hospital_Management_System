@@ -63,6 +63,7 @@ body {
     transition: all 0.3s;
     box-shadow: 0 4px 10px rgba(13, 110, 253, 0.2);
     display: inline-block;
+}
 
 .btn-nav:hover {
     background-color: #0b5ed7;

@@ -6,6 +6,7 @@ from datetime import datetime, timedelta, date
 from .models import AppointmentSlot, DoctorPost
 from django.contrib.auth.models import User
 from calendar_integration.utils import create_event, delete_event
+from mini_HMS.utils import trigger_email
 
 # --- HELPER FUNCTIONS ---
 
@@ -26,8 +27,8 @@ def is_slot_too_soon(slot_date, slot_start_time):
     """Rule 2 Helper: Checks if slot is < 1 hour from now."""
     now_naive = datetime.now()
     slot_naive = datetime.combine(slot_date, slot_start_time)
-    minimum_allowed_time = now_naive + timedelta(hours=1)
-    return slot_naive < minimum_allowed_time
+    # Check if slot is within the next hour
+    return slot_naive < (now_naive + timedelta(hours=1))
 
 
 # --- DOCTOR VIEWS ---
@@ -47,6 +48,7 @@ def doctor_dashboard(request):
 
 @login_required
 def my_schedule(request):
+    # Only doctors need to trigger cleanup when managing their schedule
     cleanup_stale_slots()
 
     if request.method == 'POST':
@@ -113,13 +115,24 @@ def cancel_appointment(request, slot_id):
         messages.warning(request, "You have already requested cancellation.")
         
     else:
-        # --- APPROVED: DELETE FROM GOOGLE CALENDAR (Using New App) ---
+        # --- APPROVED CANCELLATION --- 
+           
+        # 1. Capture details BEFORE clearing data
+        # Optimization: Use the new model method
+        email_data = {
+            "name": slot.patient.first_name if slot.patient else "Patient",
+            "doctor_name": slot.doctor.first_name,
+            "patient_name": slot.patient.first_name if slot.patient else "Patient",
+            "date": str(slot.date),
+            "time": slot.get_time_range() # <--- Cleaner call
+        }
         
-        # 1. Delete Doctor's Event
+        patient_email = slot.patient.email if slot.patient else None
+        doctor_email = slot.doctor.email
+
+        # 2. Delete Calendar Events
         if slot.doctor_google_event_id:
             delete_event(slot.doctor, slot.doctor_google_event_id)
-            
-        # 2. Delete Patient's Event
         if slot.patient_google_event_id:
             delete_event(slot.patient, slot.patient_google_event_id)
 
@@ -129,8 +142,22 @@ def cancel_appointment(request, slot_id):
         slot.cancel_request_by = None
         slot.doctor_google_event_id = None
         slot.patient_google_event_id = None
-        
         slot.save()
+
+        # 4. Trigger Cancellation Emails
+        if patient_email:
+            trigger_email(
+                action="BOOKING_CANCELLATION",
+                recipient_email=patient_email,
+                data=email_data
+            )
+
+        trigger_email(
+            action="DOCTOR_SLOT_CANCELLED",
+            recipient_email=doctor_email,
+            data=email_data
+        )
+
         messages.success(request, "Cancellation approved. Appointment removed from Calendar.")
 
     return redirect(redirect_url)
@@ -139,20 +166,17 @@ def cancel_appointment(request, slot_id):
 # --- PATIENT VIEWS ---
 @login_required
 def patient_dashboard(request):
-    cleanup_stale_slots()
-
+    # Optimization: Removed cleanup_stale_slots() call here for performance.
+    
     today = datetime.now().date()
     
-    # Filter for future dates
     raw_slots = AppointmentSlot.objects.filter(
         is_booked=False, 
         date__gte=today
     ).order_by('date', 'start_time')
 
-    available_slots = []
-    for slot in raw_slots:
-        if not is_slot_too_soon(slot.date, slot.start_time):
-            available_slots.append(slot)
+    # Filter out slots less than 1 hour away
+    available_slots = [slot for slot in raw_slots if not is_slot_too_soon(slot.date, slot.start_time)]
 
     my_bookings = AppointmentSlot.objects.filter(patient=request.user).order_by('date')
     return render(request, 'appointments/patient_dashboard.html', {'available_slots': available_slots, 'my_bookings': my_bookings})
@@ -212,6 +236,31 @@ def book_slot(request, slot_id):
             slot.patient_google_event_id = pat_id
 
             slot.save()
+
+            # --- TRIGGER CONFIRMATION EMAIL ---
+            
+            # Optimization: Use new model method
+            email_data = {
+                "patient_name": slot.patient.first_name,
+                "doctor_name": slot.doctor.first_name,
+                "date": str(slot.date),
+                "time": slot.get_time_range() # <--- Cleaner call
+            }
+
+            # 1. Email to PATIENT
+            trigger_email(
+                action="BOOKING_CONFIRMATION",
+                recipient_email=slot.patient.email,
+                data=email_data
+            )
+
+            # 2. Email to DOCTOR
+            trigger_email(
+                action="DOCTOR_NEW_BOOKING",
+                recipient_email=slot.doctor.email,
+                data=email_data
+            )
+
             messages.success(request, f"Appointment confirmed with Dr. {slot.doctor.first_name}. Appointment added to Calendar.")
                 
         except AppointmentSlot.DoesNotExist:
