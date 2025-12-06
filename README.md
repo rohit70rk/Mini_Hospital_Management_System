@@ -52,7 +52,7 @@ A web-based hospital management application focused on doctor availability manag
 
 #### 3. Install dependencies:
 
-    cd mini_Hospital_Management_System
+    cd mini_Hospital_Management_System/
 
     pip install -r requirements.txt
 
@@ -67,7 +67,7 @@ A web-based hospital management application focused on doctor availability manag
 
     # Project Structure:
 
-    /myprojects/HMS/
+    /myprojects/mini_Hospital_Management_System/
         ├── LICENSE
         ├── README.md
         ├── email-service
@@ -81,7 +81,7 @@ A web-based hospital management application focused on doctor availability manag
         │   ├── client_secret.json
         │   ├── manage.py
         │   ├── mini_HMS
-        │   │   └── client_secret.json  <<========
+        │   ├── client_secret.json  <<========
         │   ├── static
         │   ├── templates
         │   └── users
@@ -90,7 +90,7 @@ A web-based hospital management application focused on doctor availability manag
 
 #### 5. Command to run Project
 
-    cd mini_HMS
+    cd Mini_Hospital_Management_System/mini_HMS/
 
     python manage.py makemigrations
     python manage.py migrate
@@ -99,11 +99,13 @@ A web-based hospital management application focused on doctor availability manag
 
 #### 1. Install Dependencies
 
-    cd email-service
+    cd Mini_Hospital_Management_System/email-service/         
 
     npm install
 
 #### 2. Configure Credentials
+
+    cd Mini_Hospital_Management_System/email-service/         
 
     ###Mac/Linux:
     touch .env
@@ -114,9 +116,22 @@ A web-based hospital management application focused on doctor availability manag
     ###Add the following content to .env: (Replace with your actual Gmail address and App Password)
 
     SENDER_EMAIL=your.email@gmail.com
-    SENDER_PASSWORD=xvfr tgbn hyuj mkiol  # Your 16-char App Password
+    SENDER_PASSWORD=xvfrtgbnhyujmkiol
 
 ### 3. Run the Project
 
+    cd Mini_Hospital_Management_System/email-service/         
     sls offline
+
+    New TERMINAL:-
+
+    cd cd Mini_Hospital_Management_System/
+
+    ### Mac/Linux:
+    source venv/bin/activate
+    
+    ### Windows (PowerShell):    
+    venv\Scripts\activate
+
+    cd Mini_Hospital_Management_System/mini_HMS/
     python manage.py runserver
