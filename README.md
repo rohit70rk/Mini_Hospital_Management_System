@@ -42,48 +42,58 @@ A web-based hospital management application focused on doctor availability manag
 
 #### 2. Create and activate a virtual environment:
 
-    ###Mac/Linux:
+    ### Mac/Linux:
     python3 -m venv venv
     source venv/bin/activate
 
-    ###Windows (PowerShell):    
+    ### Windows (PowerShell):    
     python -m venv venv
     venv\Scripts\activate
 
 #### 3. Install dependencies:
 
-    cd Mini_Hospital_Management_System
+    cd mini_Hospital_Management_System
 
     pip install -r requirements.txt
 
 #### 4. Google Calender Integration
 
     Rename:
-    client_secret_9028xxxxxxxxxxxxxxxxxxxxxxxxxxxxx.apps.googleusercontent.com.json
+    Client_secret_9028xxxxxxxxxxxxxxxxxxxxxxxxxxxxx.apps.googleusercontent.com.json
     to
     client_secret.json
     and 
-    add it to Project root Folder:
+    Add it to Project root Folder (Pointed):
 
-    myprojects/HMS
-                ├── LICENSE
-                ├── mini_HMS
-                │   ├── mini_HMS
-                │   ├── appointments
-                │   ├── client_secret.json  <<==========
-                │   ├── manage.py
-                │   ├── static
-                │   │   └── style.css
-                │   ├── etc.
+    # Project Structure:
+
+    /myprojects/HMS/
+        ├── LICENSE
+        ├── README.md
+        ├── email-service
+        │   ├── handler.py
+        │   ├── package-lock.json
+        │   ├── package.json
+        │   └── serverless.yml
+        ├── mini_HMS
+        │   ├── appointments
+        │   ├── calendar_integration
+        │   ├── client_secret.json
+        │   ├── manage.py
+        │   ├── mini_HMS
+        │   │   └── client_secret.json  <<========
+        │   ├── static
+        │   ├── templates
+        │   └── users
+        └── requirements.txt
+
 
 #### 5. Command to run Project
 
-    cd Mini_Hospital_Management_System
+    cd mini_HMS
 
     python manage.py makemigrations
     python manage.py migrate
-
-    python manage.py runserver
 
 ### 2. Email Notification via Serverless Function
 
@@ -106,6 +116,7 @@ A web-based hospital management application focused on doctor availability manag
     SENDER_EMAIL=your.email@gmail.com
     SENDER_PASSWORD=xvfr tgbn hyuj mkiol  # Your 16-char App Password
 
-#### 3. Start the Service
+### 3. Run the Project
 
     sls offline
+    python manage.py runserver

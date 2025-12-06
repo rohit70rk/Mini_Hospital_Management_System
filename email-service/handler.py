@@ -11,8 +11,7 @@ TEMPLATES = {
         "subject": "Welcome to Mini HMS!",
         "body": lambda d: (
             f"Hello {d.get('name')},\n\n"
-            f"Welcome to Mini HMS! Your account has been successfully created.\n"
-            f"Role: {d.get('role')}\n\n"
+            f"Welcome to Mini HMS! \nYour Account has been Successfully Created.\n\n"
             f"Best Regards,\nMini HMS Team"
         )
     },
@@ -20,7 +19,7 @@ TEMPLATES = {
         "subject": "Appointment Confirmed",
         "body": lambda d: (
             f"Hello {d.get('patient_name')},\n\n"
-            f"Your appointment with Dr. {d.get('doctor_name')} is confirmed.\n\n"
+            f"Your Appointment with Dr. {d.get('doctor_name')} is Confirmed.\n\n"
             f"Date: {d.get('date')}\n"
             f"Time: {d.get('time')}\n\n"
             f"Please arrive 10 minutes early.\n"
@@ -31,10 +30,10 @@ TEMPLATES = {
         "subject": "Appointment Cancelled",
         "body": lambda d: (
             f"Hello {d.get('name')},\n\n"
-            f"The following appointment has been cancelled:\n\n"
+            f"The following Appointment has been Cancelled:\n\n"
             f"Date: {d.get('date')}\n"
             f"Time: {d.get('time')}\n\n"
-            f"If this was a mistake, please book a new slot.\n"
+            f"If this was a Mistake, Please book a New slot.\n"
             f"Mini HMS Team"
         )
     },
@@ -42,7 +41,7 @@ TEMPLATES = {
         "subject": "New Patient Appointment",
         "body": lambda d: (
             f"Hello Dr. {d.get('doctor_name')},\n\n"
-            f"You have a new appointment booking.\n"
+            f"You have a new Appointment booking.\n\n"
             f"Patient: {d.get('patient_name')}\n"
             f"Date: {d.get('date')}\n"
             f"Time: {d.get('time')}\n"
@@ -52,10 +51,10 @@ TEMPLATES = {
         "subject": "Appointment Cancelled",
         "body": lambda d: (
             f"Hello Dr. {d.get('doctor_name')},\n\n"
-            f"The appointment with {d.get('patient_name')} has been cancelled.\n\n"
+            f"The Appointment with {d.get('patient_name')} has been Cancelled.\n\n"
             f"Date: {d.get('date')}\n"
             f"Time: {d.get('time')}\n\n"
-            f"The slot is now open for other patients."
+            f"The slot is now Open for other Patients."
         )
     }
 }
