@@ -17,6 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from . import views
+from calendar_integration import views as calendar_views
 
 
 urlpatterns = [
@@ -24,4 +25,6 @@ urlpatterns = [
     path('', views.home, name='home'),
     path('', include('users.urls')),
     path('doctor/', include('appointments.urls')),
+    path('calendar/', include('calendar_integration.urls')),
+    path('oauth2callback/', calendar_views.oauth_callback, name='google_callback_legacy'),
 ]

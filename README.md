@@ -1,70 +1,93 @@
 # Mini Hospital Management System (HMS)
 
-![Python](https://img.shields.io/badge/Python-3.8%2B-blue)
-![Django](https://img.shields.io/badge/Django-Backend-green)
-![Serverless](https://img.shields.io/badge/Serverless-Offline-red)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-blue)
-
 A web-based hospital management application focused on doctor availability management and patient appointment booking. This system features real-time slot blocking to prevent double-booking, Google Calendar integration, and a separate serverless microservice for email notifications.
 
 ## 📋 Table of Contents
 - [Features](#-features)
 - [Tech Stack](#-tech-stack)
-- [Prerequisites](#-prerequisites)
 - [Installation & Setup](#-installation--setup)
 
 ## ✨ Features
 
 ### 👨‍⚕️ Doctor Portal
 * **Dashboard:** Manage appointments and personal availability.
-* [cite_start]**Slot Management:** Create availability time slots (e.g., 10:00-10:30).
-* [cite_start]**Privacy:** View and manage only their own bookings.
+* **Slot Management:** Create availability time slots (e.g., 10:00-10:30).
+* **Privacy:** View and manage only their own bookings.
 
 ### 🏥 Patient Portal
-* [cite_start]**Search:** View doctors and their specific available time slots.
-* **Booking:** Book available slots. [cite_start]The system handles concurrency to ensure a slot cannot be double-booked.
+* **Search:** View doctors and their specific available time slots.
+* **Booking:** Book available slots. The system handles concurrency to ensure a slot cannot be double-booked.
 
 ### ⚙️ System Integrations
-* [cite_start]**Authentication:** Secure Role-Based Access Control (RBAC) for Doctors and Patients with hashed passwords.
-* [cite_start]**Google Calendar Sync:** Automatically creates calendar events for both the Doctor and Patient upon confirmed booking.
+* **Authentication:** Secure Role-Based Access Control (RBAC) for Doctors and Patients with hashed passwords.
+* **Google Calendar Sync:** Automatically creates calendar events for both the Doctor and Patient upon confirmed booking.
 * **Notification Service:** A decoupled Python Serverless function (AWS Lambda) that handles:
-    * [cite_start]`SIGNUP_WELCOME`: Sent upon user registration.
-    * [cite_start]`BOOKING_CONFIRMATION`: Sent upon successful appointment booking.
+    * `SIGNUP_WELCOME`: Sent upon user registration.
+    * `BOOKING_CONFIRMATION`: Sent upon successful appointment booking.
 
 ## 🛠 Tech Stack
-* [cite_start]**Backend:** Django Framework
-* [cite_start]**Database:** PostgreSQL
-* [cite_start]**ORM:** Django ORM
-* [cite_start]**Email Service:** Serverless Framework (Python, AWS Lambda) using `serverless-offline` for local dev.
-* [cite_start]**External APIs:** Google Calendar API (OAuth2).
-
-## 🧱 Prerequisites
-Before running the project, ensure you have the following installed:
-* Python 3.x
-* Node.js & NPM (for Serverless Framework)
-* PostgreSQL
-* Google Cloud Console credentials (`credentials.json`) for Calendar API.
+* **Backend:** Django Framework
+* **Database:** SQLite
+* **ORM:** Django ORM
+* **Email Service:** Serverless Framework (Python, AWS Lambda) using `serverless-offline` for local dev.
+* **External APIs:** Google Calendar API (OAuth2).
 
 ## 💾 Installation & Setup
 
-### 1. Database Setup
+### 1. Mini Hospital Management System
 
-    CREATE DATABASE hms_db;
-    CREATE USER hms_user WITH PASSWORD 'yourpassword';
-    GRANT ALL PRIVILEGES ON DATABASE hms_db TO hms_user;
+#### 1. Clone GitHub Repo
 
-### 2. Create and activate a virtual environment:
+    git clone https://github.com/rohit70rk/Mini_Hospital_Management_System.git
+
+#### 2. Create and activate a virtual environment:
 
     ### Mac/Linux
 
     python3 -m venv venv
-    source .venv/bin/activate
+    source venv/bin/activate
 
     ### Windows
     
     python -m venv venv
     venv\Scripts\activate
 
-### 3. Install dependencies:
+#### 3. Install dependencies:
+
+    cd Mini_Hospital_Management_System
 
     pip install -r requirements.txt
+
+#### 4. Google Calender Integration
+
+    Rename:
+    client_secret_9028xxxxxxxxxxxxxxxxxxxxxxxxxxxxx.apps.googleusercontent.com.json
+    to
+    client_secret.json
+    and 
+    add it to Project root Folder:
+
+    myprojects/HMS
+                ├── LICENSE
+                ├── mini_HMS
+                │   ├── mini_HMS
+                │   ├── appointments
+                │   ├── client_secret.json  <<==========
+                │   ├── manage.py
+                │   ├── static
+                │   │   └── style.css
+                │   ├── etc.
+
+#### 5. Command to run Project
+
+    cd Mini_Hospital_Management_System
+
+    python manage.py makemigrations
+    python manage.py migrate
+
+    python manage.py runserver
+
+### 2. Email Notification via Serverless Function
+
+
+

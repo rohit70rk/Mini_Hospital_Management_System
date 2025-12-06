@@ -2,27 +2,20 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db import transaction
-# We import standard datetime to get local 'System Time' instead of UTC
 from datetime import datetime, timedelta, date
 from .models import AppointmentSlot, DoctorPost
 from django.contrib.auth.models import User
+from calendar_integration.utils import create_event, delete_event
 
 # --- HELPER FUNCTIONS ---
 
 def cleanup_stale_slots():
-    """
-    Rule 1: Delete older slots if no one booked.
-    Uses local system time to ensure accurate cleanup relative to the user's clock.
-    """
-    # Get current local system time (Naive)
+    """Rule 1: Delete older slots if no one booked."""
     now = datetime.now()
     current_date = now.date()
     current_time = now.time()
 
-    # 1. Delete slots from previous dates
     AppointmentSlot.objects.filter(is_booked=False, date__lt=current_date).delete()
-
-    # 2. Delete slots from today that have already passed
     AppointmentSlot.objects.filter(
         is_booked=False, 
         date=current_date, 
@@ -30,20 +23,10 @@ def cleanup_stale_slots():
     ).delete()
 
 def is_slot_too_soon(slot_date, slot_start_time):
-    """
-    Rule 2 Helper: Checks if a slot is within the restricted 'Current Time + 1 Hour' window.
-    Uses Naive comparisons (Local System Time) to avoid UTC timezone offsets issues.
-    """
-    # 1. Get current local time (Naive - matching your computer clock)
+    """Rule 2 Helper: Checks if slot is < 1 hour from now."""
     now_naive = datetime.now()
-    
-    # 2. Create the slot datetime (Naive)
     slot_naive = datetime.combine(slot_date, slot_start_time)
-    
-    # 3. Calculate minimum allowed time (Now + 1 Hour)
     minimum_allowed_time = now_naive + timedelta(hours=1)
-
-    # Return True if the slot is BEFORE the allowed time (Too Soon)
     return slot_naive < minimum_allowed_time
 
 
@@ -64,7 +47,6 @@ def doctor_dashboard(request):
 
 @login_required
 def my_schedule(request):
-    # Rule 1: Cleanup old slots on load
     cleanup_stale_slots()
 
     if request.method == 'POST':
@@ -73,11 +55,9 @@ def my_schedule(request):
         end_time_str = request.POST.get('end_time')
 
         try:
-            # Convert inputs to Python objects
             slot_date = datetime.strptime(date_str, "%Y-%m-%d").date()
             slot_start = datetime.strptime(start_time_str, "%H:%M").time()
             
-            # Rule 2: Validation - Block slots less than 1 hour away
             if is_slot_too_soon(slot_date, slot_start):
                 messages.error(request, "Invalid Slot: You must schedule at least 1 hour in advance.")
                 return redirect('my_schedule')
@@ -133,11 +113,25 @@ def cancel_appointment(request, slot_id):
         messages.warning(request, "You have already requested cancellation.")
         
     else:
+        # --- APPROVED: DELETE FROM GOOGLE CALENDAR (Using New App) ---
+        
+        # 1. Delete Doctor's Event
+        if slot.doctor_google_event_id:
+            delete_event(slot.doctor, slot.doctor_google_event_id)
+            
+        # 2. Delete Patient's Event
+        if slot.patient_google_event_id:
+            delete_event(slot.patient, slot.patient_google_event_id)
+
+        # 3. Clear Database
         slot.patient = None
         slot.is_booked = False
         slot.cancel_request_by = None
+        slot.doctor_google_event_id = None
+        slot.patient_google_event_id = None
+        
         slot.save()
-        messages.success(request, "Cancellation approved. Appointment cancelled.")
+        messages.success(request, "Cancellation approved. Appointment removed from Calendar.")
 
     return redirect(redirect_url)
 
@@ -145,20 +139,16 @@ def cancel_appointment(request, slot_id):
 # --- PATIENT VIEWS ---
 @login_required
 def patient_dashboard(request):
-    # Rule 1: Cleanup old slots before showing
     cleanup_stale_slots()
 
-    # We use local date for filtering
     today = datetime.now().date()
     
-    # Get all potential future slots
+    # Filter for future dates
     raw_slots = AppointmentSlot.objects.filter(
         is_booked=False, 
         date__gte=today
     ).order_by('date', 'start_time')
 
-    # Rule 2: Filter Logic
-    # We manually filter the list to hide slots that are < 1 hour away
     available_slots = []
     for slot in raw_slots:
         if not is_slot_too_soon(slot.date, slot.start_time):
@@ -178,7 +168,7 @@ def book_slot(request, slot_id):
                 messages.error(request, "Sorry, this slot was just booked by someone else.")
                 return redirect('patient_dashboard')
 
-            # Rule 2: Security Check (Backend Enforcement)
+            # 2. Rule Check
             if is_slot_too_soon(slot.date, slot.start_time):
                  messages.error(request, "This slot is no longer available (must be booked 1 hour in advance).")
                  return redirect('patient_dashboard')
@@ -198,8 +188,31 @@ def book_slot(request, slot_id):
             # 4. Book
             slot.is_booked = True
             slot.patient = request.user
+            
+            # --- GOOGLE CALENDAR INTEGRATION ---
+            start_dt = datetime.combine(slot.date, slot.start_time)
+            end_dt = datetime.combine(slot.date, slot.end_time)
+
+            # Doctor Event
+            doc_id = create_event(
+                user=slot.doctor,
+                summary=f"Appointment with {slot.patient.first_name}",
+                description=f"Patient Mobile: {slot.patient.profile.mobile}",
+                start_dt=start_dt, end_dt=end_dt
+            )
+            slot.doctor_google_event_id = doc_id
+
+            # Patient Event
+            pat_id = create_event(
+                user=slot.patient,
+                summary=f"Appointment with Dr. {slot.doctor.first_name}",
+                description=f"Doctor Mobile: {slot.doctor.profile.mobile}",
+                start_dt=start_dt, end_dt=end_dt
+            )
+            slot.patient_google_event_id = pat_id
+
             slot.save()
-            messages.success(request, f"Confirmed with Dr. {slot.doctor.first_name}!")
+            messages.success(request, f"Appointment confirmed with Dr. {slot.doctor.first_name}. Appointment added to Calendar.")
                 
         except AppointmentSlot.DoesNotExist:
             messages.error(request, "Slot does not exist.")

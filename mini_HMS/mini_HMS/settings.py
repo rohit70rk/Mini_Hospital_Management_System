@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     # Custom Apps
     'users',
     'appointments',
+    'calendar_integration',
 ]
 
 MIDDLEWARE = [
@@ -52,7 +53,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'Mini_Hospital_Management_System.urls'
+ROOT_URLCONF = 'mini_HMS.urls'
 
 TEMPLATES = [
     {
@@ -69,7 +70,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'Mini_Hospital_Management_System.wsgi.application'
+WSGI_APPLICATION = 'mini_HMS.wsgi.application'
 
 
 # Database
@@ -107,7 +108,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Kolkata'
 
 USE_I18N = True
 

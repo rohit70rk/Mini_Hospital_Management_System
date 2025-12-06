@@ -6,7 +6,8 @@ import sys
 
 def main():
     """Run administrative tasks."""
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Mini_Hospital_Management_System.settings')
+    os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mini_HMS.settings')
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:

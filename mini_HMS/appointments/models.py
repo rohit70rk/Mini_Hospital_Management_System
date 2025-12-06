@@ -8,8 +8,10 @@ class AppointmentSlot(models.Model):
     start_time = models.TimeField()
     end_time = models.TimeField()
     is_booked = models.BooleanField(default=False)
+    doctor_google_event_id = models.CharField(max_length=255, blank=True, null=True)
+    patient_google_event_id = models.CharField(max_length=255, blank=True, null=True)
     
-    # --- NEW FIELD FOR MUTUAL CANCELLATION ---
+    # --- FIELD FOR MUTUAL CANCELLATION ---
     cancel_request_by = models.CharField(
         max_length=10, 
         blank=True, 
@@ -24,7 +26,7 @@ class AppointmentSlot(models.Model):
     def __str__(self):
         return f"{self.doctor.username} - {self.date}"
 
-# --- NEW MODEL FOR COLLABORATION ---
+# --- MODEL FOR COLLABORATION ---
 class DoctorPost(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='doctor_posts')
     content = models.TextField()

@@ -2,6 +2,7 @@
 
 # ENV files
 .venv/
+client_secret.json
 
 # macOS
 .DS_Store

@@ -16,8 +16,6 @@ class Profile(models.Model):
         return f"{self.user.username} - {self.role}"
 
 # This adds .is_doctor and .is_patient properties to the standard User model dynamically.
-# This allows your templates to use {% if user.is_doctor %} without errors.
-
 @property
 def is_doctor(self):
     if hasattr(self, 'profile'):
