@@ -88,7 +88,7 @@ A web-based hospital management application focused on doctor availability manag
         └── requirements.txt
 
 
-#### 5. Command to run Project
+#### 5. Make Migrations
 
     cd Mini_Hospital_Management_System/mini_HMS/
 
