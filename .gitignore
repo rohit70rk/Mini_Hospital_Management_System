@@ -3,6 +3,7 @@
 # ENV files
 .venv/
 client_secret.json
+db.sqlite3
 
 # macOS
 .DS_Store
